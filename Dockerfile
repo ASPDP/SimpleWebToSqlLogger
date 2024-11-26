@@ -1,8 +1,6 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -16,6 +14,11 @@ RUN dotnet build "SimpleWebToSqlLogger.csproj" -c $BUILD_CONFIGURATION -o /app/b
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "SimpleWebToSqlLogger.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet tool install --global dotnet-ef --version 8.0.11
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN dotnet ef migrations add InitialCreate
+RUN dotnet ef database update
+
 
 FROM base AS final
 WORKDIR /app

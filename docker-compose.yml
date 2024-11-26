@@ -1,16 +1,23 @@
 ﻿services:
   sqlserver:
+    user: root
     image: mcr.microsoft.com/mssql/server:2022-latest
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${MSSQL_SA_PASSWORD} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     container_name: mssql-server
     environment:
       - MSSQL_PID=Developer
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=as
-    ports:
-      - "1433:1433"
+      - MSSQL_SA_PASSWORD=MYs0m3Str4ngePWD@
     volumes:
-      - sqlserver-data:/var/opt/mssql/data
-  simplewebtosqllogger:
+      - data:/var/opt/mssql/data
+      - ./log:/var/opt/mssql/log
+      - secrets:/var/opt/mssql/secretssimplewebtosqllogger
+  web:
     image: simplewebtosqllogger
     build:
       context: .
@@ -19,9 +26,11 @@
     depends_on:
       - sqlserver
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=as;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=MYs0m3Str4ngePWD@;
     ports:
-      - "5000:80"
-
+      - "80:8080"
+    links:
+      - sqlserver
 volumes:
-  sqlserver-data:
+  data:
+  secrets:
