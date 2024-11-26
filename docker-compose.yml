@@ -24,7 +24,8 @@
       dockerfile: Dockerfile
     container_name: aspnet-app
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=MYs0m3Str4ngePWD@;
     ports:
