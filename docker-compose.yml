@@ -1,0 +1,27 @@
+﻿services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-server
+    environment:
+      - MSSQL_PID=Developer
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=as
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql/data
+  simplewebtosqllogger:
+    image: simplewebtosqllogger
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aspnet-app
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=as;
+    ports:
+      - "5000:80"
+
+volumes:
+  sqlserver-data:
