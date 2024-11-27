@@ -18,7 +18,6 @@
       - ./log:/var/opt/mssql/log
       - secrets:/var/opt/mssql/secretssimplewebtosqllogger
   web:
-    image: simplewebtosqllogger
     build:
       context: .
       dockerfile: Dockerfile
