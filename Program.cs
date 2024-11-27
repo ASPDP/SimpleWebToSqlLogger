@@ -16,7 +16,11 @@ public class Program
 		//builder.Services.AddAuthorization();
 
 		var app = builder.Build();
-
+		using (var scope = app.Services.CreateScope())
+		{
+			var dataContext = scope.ServiceProvider.GetRequiredService<SovaLoggerContext>();
+			dataContext.Database.Migrate();
+		}
 		// Configure the HTTP request pipeline.
 
 		app.MapPost("/log", async (SovaLoggerContext db, HttpRequest request) => { DoSqlMagic(db, request); });

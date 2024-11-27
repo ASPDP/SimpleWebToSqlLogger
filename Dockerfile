@@ -14,11 +14,12 @@ RUN dotnet build "SimpleWebToSqlLogger.csproj" -c $BUILD_CONFIGURATION -o /app/b
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "SimpleWebToSqlLogger.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-RUN dotnet tool install --global dotnet-ef --version 8.0.11
-ENV PATH="$PATH:/root/.dotnet/tools"
-RUN dotnet ef migrations add InitialCreate
-RUN dotnet ef database update
 
+#FROM build AS efmigration
+#RUN dotnet tool install --global dotnet-ef --version 8.0.11
+#ENV PATH="$PATH:/root/.dotnet/tools"
+#RUN dotnet ef migrations add lastForgottenMigration
+#RUN dotnet ef migrations bundle
 
 FROM base AS final
 WORKDIR /app
