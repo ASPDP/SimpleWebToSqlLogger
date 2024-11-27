@@ -8,7 +8,7 @@
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=MYs0m3Str4ngePWD@
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P MYs0m3Str4ngePWD@ -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P MYs0m3Str4ngePWD@ -Q 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
