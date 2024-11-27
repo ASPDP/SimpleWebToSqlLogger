@@ -13,6 +13,7 @@
       timeout: 5s
       retries: 3
       start_period: 60s
+    restart: always
     volumes:
       - data:/var/opt/mssql/data
       - ./log:/var/opt/mssql/log
@@ -26,7 +27,7 @@
       sqlserver:
         condition: service_healthy
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=MYs0m3Str4ngePWD@;
+      - ConnectionStrings__mssqlserver=Server=sqlserver;Database=YourDatabaseName;User Id=sa;Password=MYs0m3Str4ngePWD@;Trust Server Certificate=True
     ports:
       - "80:8080"
     links:
